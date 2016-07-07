@@ -31,12 +31,25 @@ package com.example.android.safetyalert;
         import android.view.View;
         import android.widget.Button;
         import android.widget.TextView;
+        import android.widget.Toast;
 
+        import com.android.volley.Request;
+        import com.android.volley.RequestQueue;
+        import com.android.volley.Response;
+        import com.android.volley.VolleyError;
+        import com.android.volley.toolbox.JsonRequest;
+        import com.android.volley.toolbox.StringRequest;
+        import com.android.volley.toolbox.Volley;
+        import com.google.android.gms.appdatasearch.GetRecentContextCall;
         import com.google.android.gms.common.ConnectionResult;
         import com.google.android.gms.common.api.GoogleApiClient;
         import com.google.android.gms.location.LocationListener;
         import com.google.android.gms.location.LocationRequest;
         import com.google.android.gms.location.LocationServices;
+
+        import org.json.JSONArray;
+        import org.json.JSONException;
+        import org.json.JSONObject;
 
         import java.util.Locale;
 
@@ -44,12 +57,15 @@ public class AboutUs extends ActionBarActivity implements GoogleApiClient.Connec
 
 
     private final String LOG_TAG ="AboutUs";
-    TextView txtOutput;
-    Button openMapButton;
+    TextView txtOutput, name, number;
+    Button openMapButton,retrieve;
     private GoogleApiClient mGoogleApiClient;
     Location mLocation;
     private static final int REQUEST_CODE_LOCATION = 2;
     private LocationRequest mLocationRequest;
+    String url = "http://shielded.coolpage.biz/status_read.php";
+
+    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +80,18 @@ public class AboutUs extends ActionBarActivity implements GoogleApiClient.Connec
 
         openMapButton = (Button)findViewById(R.id.open_map);
         txtOutput = (TextView) findViewById(R.id.location_textView);
+        name = (TextView) findViewById(R.id.name_textView);
+        number = (TextView) findViewById(R.id.number_textView);
+        retrieve = (Button) findViewById(R.id.retrieve);
+        requestQueue = Volley.newRequestQueue(this);
+        retrieve.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                connectToDb();
+            }
+        });
     }
+
 
 
     @Override
@@ -154,5 +181,38 @@ public class AboutUs extends ActionBarActivity implements GoogleApiClient.Connec
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void connectToDb(){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                Toast.makeText(AboutUs.this , ""+s,Toast.LENGTH_LONG).show();
+                getFields(s);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Toast.makeText(AboutUs.this, ""+volleyError, Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        requestQueue.add(stringRequest);
+    }
+
+    public void getFields(String s){
+
+        try{
+            JSONObject jsonObject = new JSONObject(s);
+            JSONArray jsonArray = jsonObject.getJSONArray("result");
+            if(jsonArray.length()!=0) {
+                JSONObject personInDanger = jsonArray.getJSONObject(0);
+                name.setText("" + personInDanger.getString("name"));
+                number.setText("" + personInDanger.getString("phno"));
+            }
+        }catch(JSONException je){
+            je.printStackTrace();
+        }
     }
 }

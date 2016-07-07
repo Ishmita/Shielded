@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_width="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/blue_background"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.android.safetyalert.MainActivity"
     tools:showIn="@layout/activity_main">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
         android:layout_width="wrap_content"
@@ -19,6 +23,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FAFAFA"
         android:id="@+id/create_account_text_view"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -125,10 +130,11 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:text="Sign up"
         android:gravity="right|end"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#FAFAFA"
         android:id="@+id/sign_up_button"
         android:layout_below="@+id/confirm_password_editText"
         android:layout_alignRight="@+id/confirm_password_editText"
         android:layout_alignEnd="@+id/confirm_password_editText" />
 
 </RelativeLayout>
+</ScrollView>

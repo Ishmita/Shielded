@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_horizontal_margin">
+
+    <EditText
+        android:id="@+id/mac_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginRight="12dp"
+        android:layout_marginLeft="12dp"/>
+
+    <Button
+        android:id="@+id/cancel_button"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mac_editText"
+        android:gravity="right"
+        android:layout_toLeftOf="@+id/ok_button"
+        android:layout_toStartOf="@+id/ok_button"
+        android:text="cancel" />
+
+    <Button
+        android:id="@+id/ok_button"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/mac_editText"
+        android:gravity="center_horizontal"
+        android:text="ok" />
+
+</RelativeLayout>

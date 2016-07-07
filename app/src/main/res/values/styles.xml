@@ -1,6 +1,6 @@
 <resources>
 
-    @TargetApi(14)
+    @TargetApi(21)
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
