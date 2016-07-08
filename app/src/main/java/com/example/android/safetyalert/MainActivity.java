@@ -2,6 +2,7 @@ package com.example.android.safetyalert;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     Intent serviceIntent;
     GeofenceRequester mGeofenceRequester;
     boolean nameFilled, ageFilled, phoneFilled, emailFilled, passFilled, correctPass, isMac;
-    public static -===============
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
         if (nameFilled && ageFilled && phoneFilled && emailFilled && passFilled) {
             if(correctPass) {
                 Log.d(TAG,"all ok");
+                final String id = generateId();
+                Log.d(TAG, "generated id : "+ id);
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
@@ -131,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
                         Map<String, String> params = new HashMap<String, String>();
-                        params.put("id",generateId());
+                        params.put("id",id);
                         params.put("name", myName);
                         params.put("age", myAge);
                         params.put("phno", myPhoneNumber);
@@ -144,6 +147,10 @@ public class MainActivity extends AppCompatActivity {
 
 
                 requestQueue.add(stringRequest);
+
+                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                editor.putString("id", id);
+                editor.commit();
                 //new GPSPollingService(this);
                 //serviceIntent = new Intent(MainActivity.this, GPSPollingService.class);
                 //startService(serviceIntent);

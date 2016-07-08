@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
@@ -65,6 +66,8 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
     private Boolean servicesAvailable = false;
     private Activity mActivity;
 
+    String id;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
     ArrayList<Geofence> mCurrentGeofences = new ArrayList<Geofence>();;
     RequestQueue requestQueue, requestQueue2;
     Location mLocation;
@@ -179,10 +182,16 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
     @Override
     public void onLocationChanged(Location location) {
         mLocation = location;
+
         Log.d(TAG,"in onLocationChanged: ");
         Log.d(TAG, mLocation.toString());
         // save new location to db
-
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        String restoredText = prefs.getString("id", null);
+        if (restoredText != null) {
+            id = prefs.getString("id", "No id");//"No id" is the default value.
+            Log.d(TAG, "id saved in shared prefs: " + id);
+        }
         StringRequest stringRequest = new StringRequest(Request.Method.POST, urlToSaveLocation, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -199,7 +208,7 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("id", )
+                params.put("id", id );
                 params.put("latitude", String.valueOf(mLocation.getLatitude()));
                 params.put("longitude", String.valueOf(mLocation.getLongitude()));
                 return params;
@@ -444,6 +453,7 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
             // In debug mode, log the result
             Log.d(GeofenceUtils.APPTAG, msg);
 
+            mInProgress = false;
             // Create an Intent to broadcast to the app
             //broadcastIntent.setAction(GeofenceUtils.ACTION_GEOFENCES_ADDED)
             //        .addCategory(GeofenceUtils.CATEGORY_LOCATION_SERVICES)
