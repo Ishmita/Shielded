@@ -36,7 +36,10 @@ public class MainActivity extends AppCompatActivity {
     String myName,myAge,myPhoneNumber,myEmail,myPassword,confirmPass;
     EditText name,age,phoneNumber,email,password,confirmPassword;
     Button signUpButton;
+    Intent serviceIntent;
+    GeofenceRequester mGeofenceRequester;
     boolean nameFilled, ageFilled, phoneFilled, emailFilled, passFilled, correctPass, isMac;
+    public static -===============
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +56,11 @@ public class MainActivity extends AppCompatActivity {
         confirmPassword = (EditText) findViewById(R.id.confirm_password_editText);
         signUpButton = (Button) findViewById(R.id.sign_up_button);
         requestQueue = Volley.newRequestQueue(this);
+        mGeofenceRequester = new GeofenceRequester(this);
+        GPSPollingService pollingService = new GPSPollingService(this);
 
+        serviceIntent = new Intent(MainActivity.this, GPSPollingService.class);
+        startService(serviceIntent);
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,6 +144,9 @@ public class MainActivity extends AppCompatActivity {
 
 
                 requestQueue.add(stringRequest);
+                //new GPSPollingService(this);
+                //serviceIntent = new Intent(MainActivity.this, GPSPollingService.class);
+                //startService(serviceIntent);
 
             }else{
                 Log.d(TAG,"problem in mac or pass");
@@ -203,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            stopService(serviceIntent);
             return true;
         }
 
