@@ -1,5 +1,7 @@
 package com.example.android.safetyalert;
 
+import android.*;
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.PendingIntent;
@@ -158,7 +160,7 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
 
         if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
 
-            ActivityCompat.requestPermissions( mActivity, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  },
+            ActivityCompat.requestPermissions( mActivity, new String[] {  Manifest.permission.ACCESS_FINE_LOCATION  },
                     REQUEST_CODE_LOCATION );
         }else {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
@@ -272,15 +274,17 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
-                Toast.makeText(getApplicationContext() , ""+s,Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext() , ""+s,Toast.LENGTH_LONG).show();
                 Log.d(TAG, ""+s);
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     JSONArray jsonArray = jsonObject.getJSONArray("result");
-                    if(jsonArray.length()!=0){
-                        Log.d(TAG,"array length not 0");
-                        JSONObject personInDanger = jsonArray.getJSONObject(0);
-                        setGeofence(Double.valueOf(personInDanger.getString("latitude")), Double.valueOf(personInDanger.getString("longitude")));
+                    if(jsonArray.length()!=0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            Log.d(TAG, "array length not 0");
+                            JSONObject personInDanger = jsonArray.getJSONObject(i);
+                            setGeofence( personInDanger.getString("id"), Double.valueOf(personInDanger.getString("latitude")), Double.valueOf(personInDanger.getString("longitude")));
+                        }
                     }
             }catch (JSONException je) {
                 // do something with it
@@ -330,7 +334,7 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
             return false;
         }
 
-    public void setGeofence(Double latitude , Double longitude){
+    public void setGeofence(String id,Double latitude , Double longitude){
 
         Log.d(TAG, "in setGeofence");
         if (!servicesConnected()) {
@@ -339,13 +343,13 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
         }
 
         SimpleGeofence newGeofence = new SimpleGeofence(
-                "1",
+                id,
                 // Get latitude, longitude, and radius from the db
                 latitude,
                 longitude,
                 Float.valueOf("50.0"),
                 // Set the expiration time
-                Geofence.NEVER_EXPIRE,
+                60*60*1000,
                 // Detect both entry and exit transitions
                 Geofence.GEOFENCE_TRANSITION_ENTER
         );
@@ -469,6 +473,7 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
                     R.string.add_geofences_result_failure,
                     status.getStatusCode(), status.getStatusMessage());
 
+            mInProgress = false;
             // Log an error
             Log.e(GeofenceUtils.APPTAG, msg);
 
@@ -494,7 +499,4 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
                     PendingIntent.FLAG_UPDATE_CURRENT);
         }
     }
-
-
-
 }

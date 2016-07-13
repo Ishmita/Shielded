@@ -62,5 +62,7 @@
     <string name="connection_error_outdated">Google Play services is out of date</string>
     <string name="connection_error_sign_in_required">The user is not signed in</string>
     <string name="connection_error_unknown">An unknown error occurred</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="title_activity_profile">Profile</string>
 
 </resources>

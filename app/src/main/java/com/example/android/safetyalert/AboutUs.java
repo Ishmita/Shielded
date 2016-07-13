@@ -176,7 +176,7 @@ public class AboutUs extends ActionBarActivity implements GoogleApiClient.Connec
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.profile_settings) {
             return true;
         }
 

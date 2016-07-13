@@ -19,6 +19,7 @@ import java.util.List;
 public class GeoFenceReceiver extends BroadcastReceiver {
 
     private Context mContext;
+    private final String TAG = "Receiver";
 
     public GeoFenceReceiver() {
     }
@@ -111,13 +112,14 @@ public class GeoFenceReceiver extends BroadcastReceiver {
 
         // Create an explicit content Intent that starts the main Activity
         Intent notificationIntent =
-                new Intent(getContext(),MainActivity.class);
+                new Intent(getContext(),DashBoard.class);
+        notificationIntent.putExtra("id",ids );
 
         // Construct a task stack
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
 
         // Adds the main Activity to the task stack as the parent
-        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addParentStack(DashBoard.class);
 
         // Push the content Intent onto the stack
         stackBuilder.addNextIntent(notificationIntent);
@@ -137,6 +139,7 @@ public class GeoFenceReceiver extends BroadcastReceiver {
                 .setContentText(getContext().getString(R.string.geofence_transition_notification_text))
                 .setContentIntent(notificationPendingIntent);
 
+        Log.d(TAG, "id: "+ ids);
         // Get an instance of the Notification manager
         NotificationManager mNotificationManager =
                 (NotificationManager)getContext().getSystemService(Context.NOTIFICATION_SERVICE);

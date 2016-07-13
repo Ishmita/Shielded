@@ -109,7 +109,7 @@ public class SimpleGeofence {
      * @return A Geofence object
      */
     public Geofence toGeofence() {
-        Log.d(TAG , "in toGeofence");
+        Log.d(TAG , "in toGeofence, id: "+getId());
         // Build a new Geofence object
         return new Geofence.Builder()
                 .setRequestId(getId())

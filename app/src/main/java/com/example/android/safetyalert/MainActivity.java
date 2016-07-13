@@ -1,10 +1,16 @@
 package com.example.android.safetyalert;
 
+import android.*;
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.location.internal.LocationRequestUpdateData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,15 +39,17 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity!";
+    private final int MY_LOCATION_PERMISSION = 101;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
     RequestQueue requestQueue;
     String url = "http://shielded.coolpage.biz/insert_signup.php", mac;
-    String myName,myAge,myPhoneNumber,myEmail,myPassword,confirmPass;
+    String myName,myAge,myPhoneNumber,myEmail,myPassword,confirmPass, id;
     EditText name,age,phoneNumber,email,password,confirmPassword;
     Button signUpButton;
     Intent serviceIntent;
     GeofenceRequester mGeofenceRequester;
     boolean nameFilled, ageFilled, phoneFilled, emailFilled, passFilled, correctPass, isMac;
-    public static final String MY_PREFS_NAME = "MyPrefsFile";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +67,20 @@ public class MainActivity extends AppCompatActivity {
         signUpButton = (Button) findViewById(R.id.sign_up_button);
         requestQueue = Volley.newRequestQueue(this);
         mGeofenceRequester = new GeofenceRequester(this);
-        GPSPollingService pollingService = new GPSPollingService(this);
 
-        serviceIntent = new Intent(MainActivity.this, GPSPollingService.class);
-        startService(serviceIntent);
-        signUpButton.setOnClickListener(new View.OnClickListener() {
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        String restoredText = prefs.getString("id", null);
+        if (restoredText != null) {
+            name.setText(prefs.getString("name", null));
+            age.setText(prefs.getString("age", null));
+            phoneNumber.setText(prefs.getString("phno",null));
+            email.setText(prefs.getString("email", null));
+            password.setText(prefs.getString("password", null));
+            confirmPassword.setText(prefs.getString("password", null));
+        }
+
+
+            signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -107,6 +125,28 @@ public class MainActivity extends AppCompatActivity {
             }
             });
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch(requestCode){
+            case MY_LOCATION_PERMISSION: {
+                Log.d(TAG, "in onRequestPermissionResult, MY_LOCATION_PERMISSION");
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission granted!
+                    serviceIntent = new Intent(MainActivity.this, GPSPollingService.class);
+                    startService(serviceIntent);
+
+                } else {
+                    Log.d(TAG, "in onRequestPermissionResult, permission denied");
+                    // permission denied
+                }
+                return;
+            }
+        }
+    }
+
     public String generateId(){
         Random id = new Random();
         return String.valueOf(((1+id.nextInt(9))*10000)+id.nextInt(10000));
@@ -121,8 +161,13 @@ public class MainActivity extends AppCompatActivity {
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
-                        Toast.makeText(MainActivity.this, "" + s, Toast.LENGTH_LONG).show();
 
+                        Toast.makeText(MainActivity.this, "" + s, Toast.LENGTH_LONG).show();
+                        //checkLocationSettings();
+                        serviceIntent = new Intent(MainActivity.this, GPSPollingService.class);
+                        startService(serviceIntent);
+                        Intent aboutUsIntent = new Intent(MainActivity.this, AboutUs.class);
+                        startActivity(aboutUsIntent);
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -150,6 +195,11 @@ public class MainActivity extends AppCompatActivity {
 
                 SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                 editor.putString("id", id);
+                editor.putString("name",myName);
+                editor.putString("age",myAge);
+                editor.putString("phno", myPhoneNumber);
+                editor.putString("email", myEmail);
+                editor.putString("password", myPassword);
                 editor.commit();
                 //new GPSPollingService(this);
                 //serviceIntent = new Intent(MainActivity.this, GPSPollingService.class);
@@ -204,6 +254,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -219,8 +271,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            stopService(serviceIntent);
+        if (id == R.id.profile_settings) {
+
             return true;
         }
 
