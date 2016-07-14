@@ -56,7 +56,7 @@ public class DashBoard extends AppCompatActivity {
     RequestQueue requestQueue;
     CustomAdapter adapter;
     //Button maps;
-    String ids;
+    String ids, restoredText;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
     @Override
@@ -68,7 +68,7 @@ public class DashBoard extends AppCompatActivity {
 
         listViewPeople = (ListView) findViewById(R.id.listView_people);
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        String restoredText = prefs.getString("id", null);
+        restoredText = prefs.getString("id", null);
         if (restoredText != null) {
             //id = prefs.getString("id", "No id");//"No id" is the default value.
             checkLocationSettings();
@@ -169,6 +169,7 @@ public class DashBoard extends AppCompatActivity {
             je.printStackTrace();
         }
     }
+
 
     public void checkLocationSettings(){
         // checking location permission

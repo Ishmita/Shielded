@@ -7,6 +7,11 @@
     <string name="about_us">About us</string>
     <string name="title_activity_about_us">AboutUs</string>
 
+    <string name="about_us_text">India which sees itself as a promising super power and an economic hub, is still trapped in the clutches of various patriarchal evils like molestations, dowry, crime against women, worst among all Rape. The atrocities against women can be now brought to an end with the help of a device called shielded.
+        Shielded is a real-time stress recognition system that uses Heart rate sensor and GSR.
+        To view the complete documentation, view demo and contribute , visit our website:
+</string>
+    <string name="hyperlink">shielded.6te.net</string>
     <!-- Messages -->
     <string name="add_geofences_result_success">
         Add Geofences: Success GeofenceRequestIds=%1$s

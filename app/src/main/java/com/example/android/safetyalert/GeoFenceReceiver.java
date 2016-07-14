@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
@@ -81,7 +83,6 @@ public class GeoFenceReceiver extends BroadcastReceiver {
                 }
                 ids = TextUtils.join(GeofenceUtils.GEOFENCE_ID_DELIMITER,geofenceIds);
                 String transitionType = getTransitionString(transition);
-
                 sendNotification(transitionType, ids);
 
                 // Log the transition type and a message
@@ -101,6 +102,7 @@ public class GeoFenceReceiver extends BroadcastReceiver {
             }
         }
     }
+
 
     /**
      * Posts a notification in the notification bar when a transition is detected.
@@ -132,7 +134,7 @@ public class GeoFenceReceiver extends BroadcastReceiver {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
 
         // Set the notification contents
-        builder.setSmallIcon(R.drawable.cast_ic_notification_0)
+        builder.setSmallIcon(R.drawable.shield_icon)
                 .setContentTitle(
                         getContext().getString(R.string.geofence_transition_notification_title,
                                 transitionType, ids))

@@ -45,7 +45,7 @@
 
     <EditText
         style="@style/EditTextStyle"
-        android:hint="Age"
+        android:hint="Emergency contact"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:inputType="number"
         android:paddingTop="4dp"

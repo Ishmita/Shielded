@@ -1,6 +1,6 @@
 package com.example.android.safetyalert;
 
-import android.*;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
@@ -19,6 +19,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -68,7 +69,7 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
     private Boolean servicesAvailable = false;
     private Activity mActivity;
 
-    String id;
+    String id, restoredText;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     ArrayList<Geofence> mCurrentGeofences = new ArrayList<Geofence>();;
     RequestQueue requestQueue, requestQueue2;
@@ -189,7 +190,7 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
         Log.d(TAG, mLocation.toString());
         // save new location to db
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        String restoredText = prefs.getString("id", null);
+        restoredText = prefs.getString("id", null);
         if (restoredText != null) {
             id = prefs.getString("id", "No id");//"No id" is the default value.
             Log.d(TAG, "id saved in shared prefs: " + id);
@@ -283,6 +284,10 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
                         for (int i = 0; i < jsonArray.length(); i++) {
                             Log.d(TAG, "array length not 0");
                             JSONObject personInDanger = jsonArray.getJSONObject(i);
+                            if(personInDanger.getString("id").equalsIgnoreCase(restoredText)){
+                                sendSMS(personInDanger.getString("age"), personInDanger.getString("name")+" needs help");
+                            }
+
                             setGeofence( personInDanger.getString("id"), Double.valueOf(personInDanger.getString("latitude")), Double.valueOf(personInDanger.getString("longitude")));
                         }
                     }
@@ -301,6 +306,19 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
         requestQueue.add(stringRequest);
     }
 
+
+    public void sendSMS(String phoneNo, String msg){
+        try {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNo, null, msg, null, null);
+            Toast.makeText(getApplicationContext(), "Message Sent",
+                    Toast.LENGTH_LONG).show();
+        } catch (Exception ex) {
+            Toast.makeText(getApplicationContext(),ex.getMessage().toString(),
+                    Toast.LENGTH_LONG).show();
+            ex.printStackTrace();
+        }
+    }
     /**
      * Verify that Google Play services is available before making a request.
      *
