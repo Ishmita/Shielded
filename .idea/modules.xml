@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Shielded.iml" filepath="$PROJECT_DIR$/Shielded.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/safetyAlert.iml" filepath="$PROJECT_DIR$/safetyAlert.iml" />
     </modules>

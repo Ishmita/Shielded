@@ -169,7 +169,11 @@ public class MainActivity extends AppCompatActivity {
             if(correctPass) {
                 Log.d(TAG,"all ok");
                 final String id = generateId();
+                SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+                final String token = prefs.getString("token", null);
+
                 Log.d(TAG, "generated id : "+ id);
+                Log.d(TAG, "token: "+ token);
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
@@ -200,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
                         params.put("email", myEmail);
                         params.put("password", myPassword);
                         params.put("mac",mac);
+                        params.put("fcm_token", token);
                         return params;
                     }
                 };

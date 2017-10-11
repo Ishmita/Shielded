@@ -72,7 +72,7 @@ public class GeoFenceReceiver extends BroadcastReceiver {
             if (
                     (transition == Geofence.GEOFENCE_TRANSITION_ENTER)
                             ||
-                            (transition == Geofence.GEOFENCE_TRANSITION_EXIT)
+                            (transition == Geofence.GEOFENCE_TRANSITION_EXIT || transition == Geofence.GEOFENCE_TRANSITION_DWELL)
                     ) {
 
                 // Post a notification
