@@ -3,7 +3,6 @@ package com.example.android.safetyalert;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -11,7 +10,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -31,13 +29,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GestureRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -48,7 +44,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -64,7 +59,7 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
     private final String TAG = "GPSPollingService";
 
     private PendingIntent mGeofencePendingIntent;
-    String url = "http://shielded.coolpage.biz/status_read.php", urlToSaveLocation = "http://shielded.coolpage.biz/lat_long.php";
+    String url = "http://shielded.6te.net/status_read.php", urlToSaveLocation = "http://shielded.6te.net/lat_long.php";
     private static final int REQUEST_CODE_LOCATION = 2;
     private Boolean servicesAvailable = false;
     private Activity mActivity;
@@ -159,9 +154,9 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
 
         Log.d(TAG,"in onConnected: ");
 
-        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+        if (ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
 
-            ActivityCompat.requestPermissions( mActivity, new String[] {  Manifest.permission.ACCESS_FINE_LOCATION  },
+            ActivityCompat.requestPermissions( (Activity) getApplicationContext(), new String[] {  Manifest.permission.ACCESS_FINE_LOCATION  },
                     REQUEST_CODE_LOCATION );
         }else {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
@@ -285,7 +280,7 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
                             Log.d(TAG, "array length not 0");
                             JSONObject personInDanger = jsonArray.getJSONObject(i);
                             if(personInDanger.getString("id").equalsIgnoreCase(restoredText)){
-                                sendSMS(personInDanger.getString("age"), personInDanger.getString("name")+" needs help");
+                                //sendSMS(personInDanger.getString("age"), personInDanger.getString("name")+" needs help");
                             }
 
                             setGeofence( personInDanger.getString("id"), Double.valueOf(personInDanger.getString("latitude")), Double.valueOf(personInDanger.getString("longitude")));
@@ -305,7 +300,6 @@ public class GPSPollingService extends Service implements ResultCallback<Status>
 
         requestQueue.add(stringRequest);
     }
-
 
     public void sendSMS(String phoneNo, String msg){
         try {

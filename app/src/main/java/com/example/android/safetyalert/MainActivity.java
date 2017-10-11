@@ -30,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.internal.LocationRequestUpdateData;
 
 import java.util.HashMap;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private final int MY_LOCATION_PERMISSION = 101;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     RequestQueue requestQueue;
-    String url = "http://shielded.coolpage.biz/insert_signup.php", mac;
+    String url = "http://shielded.6te.net/insert_signup.php", mac;
     String myName,myAge,myPhoneNumber,myEmail,myPassword,confirmPass, id;
     EditText name,age,phoneNumber,email,password,confirmPassword;
     Button signUpButton;
@@ -121,7 +122,17 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     correctPass = true;
                 }
-                checkMac();
+                if (ContextCompat.checkSelfPermission( MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+
+                    ActivityCompat.requestPermissions( MainActivity.this, new String[] {  Manifest.permission.ACCESS_FINE_LOCATION  },
+                            2 );
+                }else {
+                    checkMac();
+                    //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                    //Location mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                    //txtOutput.setText(mLocation.toString());
+                    Log.d(TAG, "calling fusedLocationApi");
+                }
             }
             });
     }
@@ -135,8 +146,9 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission granted!
-                    serviceIntent = new Intent(MainActivity.this, GPSPollingService.class);
-                    startService(serviceIntent);
+                    //serviceIntent = new Intent(MainActivity.this, GPSPollingService.class);
+                    //startService(serviceIntent);
+                    checkMac();
 
                 } else {
                     Log.d(TAG, "in onRequestPermissionResult, permission denied");
@@ -162,17 +174,19 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String s) {
 
-                        Toast.makeText(MainActivity.this, "" + s, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(MainActivity.this, "" + s, Toast.LENGTH_LONG).show();
                         //checkLocationSettings();
                         serviceIntent = new Intent(MainActivity.this, GPSPollingService.class);
                         startService(serviceIntent);
                         Intent aboutUsIntent = new Intent(MainActivity.this, AboutUs.class);
+                        Log.d(TAG, "response: " + s);
                         startActivity(aboutUsIntent);
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         Toast.makeText(MainActivity.this, "" + volleyError, Toast.LENGTH_LONG).show();
+                        Log.d(TAG , "error response: "+volleyError);
 
                     }
                 }) {
@@ -284,6 +298,11 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.about_us) {
             Intent aboutUsIntent = new Intent(MainActivity.this, AboutUs.class);
             startActivity(aboutUsIntent);
+        }
+
+        else if(id == R.id.health_check) {
+            Intent monitorIntent = new Intent(MainActivity.this, HealthMonitor.class);
+            startActivity(monitorIntent);
         }
 
         return super.onOptionsItemSelected(item);

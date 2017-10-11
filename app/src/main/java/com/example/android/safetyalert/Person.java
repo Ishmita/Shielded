@@ -14,6 +14,25 @@ public class Person {
     private String longitude;
     private boolean geoStatus;
     private int color;
+    private String beatValue;
+    private String gsrValue;
+
+
+    public String getBeatValue() {
+        return beatValue;
+    }
+
+    public void setBeatValue(String beatValue) {
+        this.beatValue = beatValue;
+    }
+
+    public String getGsrValue() {
+        return gsrValue;
+    }
+
+    public void setGsrValue(String gsrValue) {
+        this.gsrValue = gsrValue;
+    }
 
     public String getLatitude() {
         return latitude;

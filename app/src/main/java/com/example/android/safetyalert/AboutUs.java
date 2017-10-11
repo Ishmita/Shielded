@@ -16,44 +16,15 @@ package com.example.android.safetyalert;
  * limitations under the License.
  */
 
-        import android.Manifest;
+
         import android.content.Intent;
-        import android.content.pm.PackageManager;
-        import android.net.Uri;
-        import android.support.v4.app.ActivityCompat;
-        import android.support.v4.content.ContextCompat;
-        import android.support.v7.app.ActionBarActivity;
         import android.os.Bundle;
+        import android.support.v7.app.AppCompatActivity;
         import android.view.Menu;
         import android.view.MenuItem;
-        import android.location.Location;
         import android.util.Log;
-        import android.view.View;
-        import android.widget.Button;
-        import android.widget.TextView;
-        import android.widget.Toast;
 
-        import com.android.volley.Request;
-        import com.android.volley.RequestQueue;
-        import com.android.volley.Response;
-        import com.android.volley.VolleyError;
-        import com.android.volley.toolbox.JsonRequest;
-        import com.android.volley.toolbox.StringRequest;
-        import com.android.volley.toolbox.Volley;
-        import com.google.android.gms.appdatasearch.GetRecentContextCall;
-        import com.google.android.gms.common.ConnectionResult;
-        import com.google.android.gms.common.api.GoogleApiClient;
-        import com.google.android.gms.location.LocationListener;
-        import com.google.android.gms.location.LocationRequest;
-        import com.google.android.gms.location.LocationServices;
-
-        import org.json.JSONArray;
-        import org.json.JSONException;
-        import org.json.JSONObject;
-
-        import java.util.Locale;
-
-public class AboutUs extends ActionBarActivity {
+public class AboutUs extends AppCompatActivity {
 
 
     private final String LOG_TAG ="AboutUs";
@@ -95,7 +66,25 @@ public class AboutUs extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.profile_settings) {
+
+            Intent profile = new Intent(AboutUs.this, MainActivity.class);
+            startActivity(profile);
             return true;
+        }
+
+        else if(id == R.id.dash_board) {
+            Intent dashBoardIntent = new Intent(AboutUs.this, DashBoard.class);
+            startActivity(dashBoardIntent);
+        }
+
+        else if (id == R.id.about_us) {
+            Intent aboutUsIntent = new Intent(AboutUs.this, AboutUs.class);
+            startActivity(aboutUsIntent);
+        }
+
+        else if(id == R.id.health_check) {
+            Intent monitorIntent = new Intent(AboutUs.this, HealthMonitor.class);
+            startActivity(monitorIntent);
         }
 
         return super.onOptionsItemSelected(item);

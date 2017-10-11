@@ -52,7 +52,7 @@ public class DashBoard extends AppCompatActivity {
     Intent serviceIntent;
     ListView listViewPeople;
     ArrayList<Person> people = new ArrayList<Person>();
-    String url = "http://shielded.coolpage.biz/status_read.php";
+    String url = "http://shielded.6te.net/status_read.php";
     RequestQueue requestQueue;
     CustomAdapter adapter;
     //Button maps;
@@ -217,6 +217,10 @@ public class DashBoard extends AppCompatActivity {
             Intent aboutUsIntent = new Intent(DashBoard.this, AboutUs.class);
             startActivity(aboutUsIntent);
             return true;
+        }
+        else if(id == R.id.health_check) {
+            Intent monitorIntent = new Intent(DashBoard.this, HealthMonitor.class);
+            startActivity(monitorIntent);
         }
 
         return super.onOptionsItemSelected(item);

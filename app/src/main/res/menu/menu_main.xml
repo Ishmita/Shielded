@@ -17,4 +17,9 @@
         android:orderInCategory="100"
         android:title="@string/about_us"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/health_check"
+        android:orderInCategory="100"
+        android:title="Health check"
+        app:showAsAction="never" />
 </menu>
